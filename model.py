@@ -5,6 +5,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder,OrdinalEncoder,LabelEncoder
 from sklearn.linear_model import LinearRegression
 from sklearn.neighbors import KNeighborsRegressor
+from sklearn.metrics import mean_absolute_error,mean_squared_error
+import pickle
 
 df=pd.read_csv("final_data.csv")
 
@@ -33,5 +35,12 @@ x_train,x_test,y_train,y_test=train_test_split(X,y,test_size=0.2,random_state=42
 lr=KNeighborsRegressor()
 lr.fit(x_train,y_train)
 
-print(lr.score(x_test,y_test))
-print(lr.score(x_train,y_train))
+print("Test score",lr.score(x_test,y_test))
+print("Train Score",lr.score(x_train,y_train))
+
+test=lr.predict(x_test)
+
+print("Mean absolute errror ",mean_absolute_error(test,y_test))
+print("Mean Squared Error: ",mean_squared_error(test,y_test))
+
+pickle.dump(lr, open("model.pkl", "wb"))
