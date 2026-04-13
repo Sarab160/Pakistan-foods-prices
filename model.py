@@ -26,6 +26,7 @@ x_f=pd.concat([x,en_datafram],axis=1)
 oe=OrdinalEncoder()
 fe=df[["cmname"]]
 fe_e=oe.fit_transform(fe)
+
 oe_dataframe=pd.DataFrame(data=fe_e,columns=fe.columns)
 
 X=pd.concat([x_f,oe_dataframe],axis=1)
@@ -43,4 +44,9 @@ test=lr.predict(x_test)
 print("Mean absolute errror ",mean_absolute_error(test,y_test))
 print("Mean Squared Error: ",mean_squared_error(test,y_test))
 
+
+
+pickle.dump(ohe, open("ohe.pkl", "wb"))
+pickle.dump(oe, open("oe.pkl", "wb"))
+pickle.dump(X.columns, open("columns.pkl", "wb"))
 pickle.dump(lr, open("model.pkl", "wb"))
