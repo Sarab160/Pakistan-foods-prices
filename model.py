@@ -8,6 +8,7 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.metrics import mean_absolute_error,mean_squared_error
 import pickle
 
+
 df=pd.read_csv("final_data.csv")
 
 x=df[["prev_price","day","month","year"]]
