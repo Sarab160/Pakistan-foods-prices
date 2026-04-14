@@ -3,29 +3,31 @@ import pandas as pd
 import numpy as np
 import pickle
 
-# LOAD FILES
+# ---------------- LOAD FILES ----------------
 model = pickle.load(open("model.pkl", "rb"))
 ohe = pickle.load(open("ohe.pkl", "rb"))
 oe = pickle.load(open("oe.pkl", "rb"))
 
 df = pd.read_csv("final_data.csv")
 
-st.title("🥦 Pakistan Food Price Intelligence System")
+# ---------------- PAGE CONFIG ----------------
+st.set_page_config(page_title="Pakistan Food Intelligence", layout="centered")
 
-st.markdown("### Predict price + get smart buying recommendation")
+st.title("🥦 Pakistan Food Price Intelligence System")
+st.markdown("### Predict price + smart buying recommendation with location insights")
 
 # ---------------- INPUTS ----------------
-admname = st.selectbox("Admin Name", df["admname"].unique())
-mktname = st.selectbox("Market Name", df["mktname"].unique())
-cmname = st.selectbox("Commodity Name", df["cmname"].unique())
+admname = st.selectbox("📍 Admin Area", df["admname"].unique())
+mktname = st.selectbox("🏪 Market Name", df["mktname"].unique())
+cmname = st.selectbox("🛒 Commodity", df["cmname"].unique())
 
-prev_price = st.number_input("Previous Price", min_value=0.0)
-day = st.number_input("Day", min_value=1, max_value=31)
-month = st.number_input("Month", min_value=1, max_value=12)
-year = st.number_input("Year", min_value=2000, max_value=2100)
+prev_price = st.number_input("💰 Previous Price", min_value=0.0)
+day = st.number_input("📅 Day", min_value=1, max_value=31)
+month = st.number_input("📅 Month", min_value=1, max_value=12)
+year = st.number_input("📅 Year", min_value=2000, max_value=2100)
 
 # ---------------- PREDICTION ----------------
-if st.button("Predict Price"):
+if st.button("🚀 Predict Price"):
 
     # Encoding
     ohe_input = pd.DataFrame([[admname, mktname]], columns=["admname", "mktname"])
@@ -41,32 +43,51 @@ if st.button("Predict Price"):
 
     predicted_price = model.predict(final_input)[0]
 
-    st.success(f"📊 Predicted Price: {predicted_price:.2f}")
-
-    # ---------------- BUY / NOT BUY LOGIC ----------------
+    # ---------------- CALCULATIONS ----------------
     price_change = predicted_price - prev_price
     percent_change = (price_change / prev_price) * 100 if prev_price != 0 else 0
 
-    st.markdown("### 🧠 Smart Recommendation")
+    # ---------------- OUTPUT HEADER ----------------
+    st.success("✅ Prediction Completed Successfully")
+
+    st.markdown("## 📊 Result Summary")
+
+    st.write(f"📍 **Location:** {admname} → {mktname}")
+    st.write(f"🛒 **Commodity:** {cmname}")
+    st.write(f"💰 **Previous Price:** {prev_price}")
+    st.write(f"🔮 **Predicted Price:** {predicted_price:.2f}")
+    st.write(f"📊 **Change:** {percent_change:.2f}%")
+
+    # ---------------- SMART MESSAGE ----------------
+    st.markdown("## 🧠 Smart Recommendation System")
 
     if predicted_price < prev_price:
         st.success("🟢 BUY NOW")
-        st.write("📉 Price is expected to decrease. Good time to purchase this commodity.")
+        st.write(
+            f"📉 At **{mktname}, {admname}**, price is expected to decrease. "
+            f"This is a good opportunity to buy **{cmname}**."
+        )
 
     elif percent_change <= 5:
         st.info("🟡 BUY (MODERATE)")
-        st.write("📊 Slight price increase expected. You may buy if needed.")
+        st.write(
+            f"📊 At **{mktname}, {admname}**, slight increase expected for **{cmname}**. "
+            "You may buy if needed."
+        )
 
     else:
         st.error("🔴 NOT RECOMMENDED TO BUY")
-        st.write("📈 Price is expected to increase significantly. Consider waiting.")
+        st.write(
+            f"📈 At **{mktname}, {admname}**, price of **{cmname}** may increase significantly. "
+            "It is better to wait."
+        )
 
-    # ---------------- EXTRA INSIGHT ----------------
-    st.markdown("### 📌 Market Insight")
+    # ---------------- MARKET INSIGHT ----------------
+    st.markdown("## 📌 Market Insight")
 
     if percent_change > 10:
-        st.warning("⚠️ High inflation trend detected for this item.")
+        st.warning(f"⚠️ High inflation trend detected in {mktname}, {admname}.")
     elif percent_change < -5:
-        st.success("📉 Deflation trend detected — prices are dropping.")
+        st.success(f"📉 Deflation trend detected in {mktname}, {admname}.")
     else:
-        st.info("📊 Stable market conditions for this commodity.")
+        st.info(f"📊 Stable market conditions in {mktname}, {admname}.")
