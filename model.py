@@ -54,7 +54,7 @@ print("Root mean squared error",root_mean_squared_error(y_test,test))
 
 
 
-# pickle.dump(ohe, open("ohe.pkl", "wb"))
-# pickle.dump(oe, open("oe.pkl", "wb"))
-# pickle.dump(X.columns, open("columns.pkl", "wb"))
-# pickle.dump(lr, open("model.pkl", "wb"))
+pickle.dump(ohe, open("ohe.pkl", "wb"))
+pickle.dump(oe, open("oe.pkl", "wb"))
+pickle.dump(X.columns, open("columns.pkl", "wb"))
+pickle.dump(lr, open("model.pkl", "wb"))
