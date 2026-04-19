@@ -3,12 +3,11 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder,OrdinalEncoder,LabelEncoder
-from sklearn.linear_model import LinearRegression
-from sklearn.neighbors import KNeighborsRegressor
 from sklearn.metrics import mean_absolute_error,mean_squared_error,root_mean_squared_error
 import pickle
 from sklearn.preprocessing import StandardScaler
 
+from sklearn.ensemble import RandomForestRegressor
 
 df=pd.read_csv("final_data.csv")
 
@@ -40,7 +39,14 @@ x_train,x_test,y_train,y_test=train_test_split(X,y,test_size=0.2,random_state=42
 # x_test_s=scaler.transform(x_test)
 
 
-lr=KNeighborsRegressor()
+lr = RandomForestRegressor(
+    n_estimators=150,
+    max_depth=10,
+    min_samples_split=5,
+    random_state=42
+)
+
+
 lr.fit(x_train,y_train)
 
 print("Test score",lr.score(x_test,y_test))
