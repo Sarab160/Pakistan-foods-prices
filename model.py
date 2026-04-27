@@ -5,9 +5,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder,OrdinalEncoder,LabelEncoder
 from sklearn.metrics import mean_absolute_error,mean_squared_error,root_mean_squared_error
 import pickle
-from sklearn.preprocessing import StandardScaler
-
 from sklearn.ensemble import RandomForestRegressor
+
+## https://docs.google.com/forms/d/e/1FAIpQLScuPN0MqL6rTbyhb-l7dhqp70T3KZvgFrPU42IAY4teNqLkzg/viewform?usp=publish-editor
 
 df=pd.read_csv("final_data.csv")
 
