@@ -206,24 +206,34 @@ def interactive_prompt():
     return selected_province, selected_city, selected_product
 
 def main():
-    # Parse command line arguments for automation (e.g., n8n integration)
-    parser = argparse.ArgumentParser(description="Food Price Scraper")
-    parser.add_argument("--province", type=str, help="Province name")
-    parser.add_argument("--city", type=str, help="City name")
-    parser.add_argument("--product", type=str, help="Product name")
-    parser.add_argument("--auto", action="store_true", help="Run without interactive prompt")
-    
-    args = parser.parse_args()
-    
-    if args.auto:
-        # Automated mode (e.g., running from n8n)
-        if not (args.province and args.city and args.product):
-            print(json.dumps({"error": "Missing required arguments for automated mode"}))
-            sys.exit(1)
-        selected_province = args.province
-        selected_city = args.city
-        selected_product = args.product
+    # Check for direct positional arguments first: script.py "Product" "Province" "City"
+    if len(sys.argv) == 4 and not any(arg.startswith('-') for arg in sys.argv[1:]):
+        # We received exactly 3 positional arguments
+        selected_product = sys.argv[1]
+        selected_province = sys.argv[2]
+        selected_city = sys.argv[3]
+        is_auto = True
     else:
+        # Parse command line arguments for automation (e.g., n8n integration)
+        parser = argparse.ArgumentParser(description="Food Price Scraper")
+        parser.add_argument("--province", type=str, help="Province name")
+        parser.add_argument("--city", type=str, help="City name")
+        parser.add_argument("--product", type=str, help="Product name")
+        parser.add_argument("--auto", action="store_true", help="Run without interactive prompt")
+        
+        args = parser.parse_args()
+        is_auto = args.auto
+        
+        if is_auto:
+            # Automated mode (e.g., running from n8n)
+            if not (args.province and args.city and args.product):
+                print(json.dumps({"error": "Missing required arguments for automated mode"}))
+                sys.exit(1)
+            selected_province = args.province
+            selected_city = args.city
+            selected_product = args.product
+            
+    if not is_auto:
         # Interactive mode
         try:
             selected_province, selected_city, selected_product = interactive_prompt()
@@ -232,7 +242,7 @@ def main():
             sys.exit(0)
 
     # Validate inputs against predefined lists if running in automated mode
-    if args.auto:
+    if is_auto:
         if selected_province not in PROVINCES:
             print(json.dumps({"error": f"Invalid province: {selected_province}"}))
             sys.exit(1)
@@ -262,7 +272,7 @@ def main():
     }
     
     # Print clearly formatted output
-    if not args.auto:
+    if not is_auto:
         print("\n=== Scraping Results ===")
         print(f"Location: {selected_city}, {selected_province}")
         print(f"Product:  {selected_product}")
