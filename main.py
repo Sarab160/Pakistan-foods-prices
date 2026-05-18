@@ -54,15 +54,15 @@ def predict(data:dict):
         # Recommendation logic
         if predicted_price < prev_price:
             recommendation = "BUY NOW"
-            message = "📉 Price is expected to decrease. Good time to purchase."
+            message = "📉 Next month's price is expected to decrease. Good time to purchase."
         
         elif percent_change <= 5:
             recommendation = "BUY (MODERATE)"
-            message = "📊 Slight price increase expected. You may buy if needed."
+            message = "📊 Slight price increase expected next month. You may buy if needed."
         
         else:
             recommendation = "NOT RECOMMENDED"
-            message = "📈 Price is expected to increase significantly. Consider waiting."
+            message = "📈 Next month's price is expected to increase significantly. Consider waiting."
 
         # Market insight
         if percent_change > 10:
@@ -74,15 +74,15 @@ def predict(data:dict):
 
         # ---------------- FINAL FORMATTED MESSAGE ----------------
         full_message = f"""
-📊 Price Prediction Report
+📊 Next Month Price Prediction Report
 
 📍 Location: {mktname}, {admname}
 🛒 Product: {cmname}
 
-💰 Current Price: {prev_price} PKR
-🔮 Predicted Price: {round(predicted_price,2)} PKR
+💰 Today's Current Price: {prev_price} PKR
+🔮 Next Month's Predicted Price: {round(predicted_price,2)} PKR
 
-📈 Change: {round(percent_change,2)}%
+📈 Expected Change: {round(percent_change,2)}%
 
 🧠 Recommendation: {recommendation}
 {message}

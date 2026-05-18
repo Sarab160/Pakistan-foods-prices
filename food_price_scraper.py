@@ -157,27 +157,33 @@ def perform_scraping(product, province, city):
 
 app = FastAPI(title="Food Price Scraper API", description="API for Food Price Data Science Scraper")
 
-@app.get("/scrape")
-def scrape_endpoint(product: str, province: str, city: str):
-    """
-    API Endpoint to scrape food prices based on product, province, and city.
-    """
-    # Validate inputs against predefined lists
+class ScrapeRequest(BaseModel):
+    product: str
+    province: str
+    city: str
+
+@app.post("/scrape")
+def scrape_endpoint(data: ScrapeRequest):
+
+    product = data.product
+    province = data.province
+    city = data.city
+
+    # Validate inputs
     if province not in PROVINCES:
         raise HTTPException(status_code=400, detail=f"Invalid province: {province}")
+
     if city not in CITIES_BY_PROVINCE.get(province, []):
         raise HTTPException(status_code=400, detail=f"Invalid city for province {province}: {city}")
+
     if product not in PRODUCTS:
         raise HTTPException(status_code=400, detail=f"Invalid product: {product}")
 
-    # Perform scraping
     price = perform_scraping(product, province, city)
-    
-    # Generate date info
+
     date_info = get_current_date_info()
-    
-    # Prepare final output
-    result = {
+
+    return {
         "product": product,
         "province": province,
         "city": city,
@@ -187,9 +193,6 @@ def scrape_endpoint(product: str, province: str, city: str):
         "year": date_info["year"],
         "date": date_info["date"]
     }
-    
-    return result
-
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("food_price_scraper:app", host="0.0.0.0", port=8000, reload=True)
