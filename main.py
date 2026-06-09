@@ -15,9 +15,9 @@ oe=pickle.load(open("oe.pkl","rb"))
 
 @app.get("/")
 def home():
-    return {"message: Pakistan Food Price Intelligence API Reunning"}
+    return {"message": "Pakistan Food Price Intelligence API Running"}
 
-#-====Prediction============
+
 
 @app.post("/predict")
 def predict(data:dict):
@@ -32,7 +32,7 @@ def predict(data:dict):
         month=int(data["month"])
         year=int(data["year"])
         
-        ## encoding    
+       
         ohe_input=pd.DataFrame([[admname,mktname]],columns=["admname","mktname"])
         ohe_encoded=ohe.transform(ohe_input)
         
@@ -51,7 +51,7 @@ def predict(data:dict):
         price_change = predicted_price - prev_price
         percent_change = (price_change / prev_price) * 100 if prev_price != 0 else 0
 
-        # Recommendation logic
+        
         if predicted_price < prev_price:
             recommendation = "BUY NOW"
             message = "📉 Next month's price is expected to decrease. Good time to purchase."
@@ -64,7 +64,7 @@ def predict(data:dict):
             recommendation = "NOT RECOMMENDED"
             message = "📈 Next month's price is expected to increase significantly. Consider waiting."
 
-        # Market insight
+       
         if percent_change > 10:
             insight = "⚠️ High inflation trend detected."
         elif percent_change < -5:
@@ -72,7 +72,7 @@ def predict(data:dict):
         else:
             insight = "📊 Stable market conditions."
 
-        # ---------------- FINAL FORMATTED MESSAGE ----------------
+        
         full_message = f"""
 📊 Next Month Price Prediction Report
 
@@ -91,7 +91,7 @@ def predict(data:dict):
 {insight}
 """
 
-        # ---------------- RESPONSE ----------------
+        
         return {
             "location": {
                 "admin": admname,
