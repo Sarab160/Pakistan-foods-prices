@@ -1,0 +1,276 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1GH_IcZ3ar4uwcliBNvcquLHl3ZPIjc_0wcQhiMpWtAA",
+          "mode": "list",
+          "cachedResultName": "Price prediction form (Responses)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GH_IcZ3ar4uwcliBNvcquLHl3ZPIjc_0wcQhiMpWtAA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 226601509,
+          "mode": "list",
+          "cachedResultName": "Form responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GH_IcZ3ar4uwcliBNvcquLHl3ZPIjc_0wcQhiMpWtAA/edit#gid=226601509"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2208,
+        -1056
+      ],
+      "id": "085b4323-d352-4378-942d-9b7d0f907a2c",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "mXFAlmVP1y0k0Noq",
+          "name": "Google Sheets Trigger account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "50c3444a-2045-4c95-8a73-eed5041da27b",
+              "name": "email",
+              "value": "={{$json[\"Email address\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "fd457c00-8d46-4b4a-94d8-23321a93adce",
+              "name": "admname",
+              "value": "={{$json[\"Select Province\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "25bc17a9-715f-46ab-bb00-dc07b56df2ad",
+              "name": "mktname",
+              "value": "={{$json[\"Select City\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "e5170e27-e99c-4e53-bd91-cc3d0809b6c1",
+              "name": "product",
+              "value": "={{$json[\"Select Product\"]}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1968,
+        -928
+      ],
+      "id": "4bf5bc66-405a-4dca-8f0e-6f918d250224",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5754ccbb-8d50-4b3c-8f06-d47af3819e74",
+              "name": "PRICE",
+              "value": "={{ $json.price }}",
+              "type": "string"
+            },
+            {
+              "id": "74f1ac8c-faec-4d2b-9088-e5e28fb47682",
+              "name": "day",
+              "value": "={{ $json.day }}",
+              "type": "string"
+            },
+            {
+              "id": "ee07cf90-ce44-4b67-9a92-7ea40b179adf",
+              "name": "month",
+              "value": "={{ $json.month }}",
+              "type": "string"
+            },
+            {
+              "id": "a1adfbfc-32a2-4fae-a108-60e653c24583",
+              "name": "year",
+              "value": "={{ $json.year }}",
+              "type": "string"
+            },
+            {
+              "id": "cb660766-323f-42c1-8092-9f90b9a4cdd9",
+              "name": "admname",
+              "value": "={{ $('Edit Fields').item.json.admname }}",
+              "type": "string"
+            },
+            {
+              "id": "03992dd7-03a5-4b61-aebd-07668c206b50",
+              "name": "mktname",
+              "value": "={{ $('Edit Fields').item.json.mktname }}",
+              "type": "string"
+            },
+            {
+              "id": "97009dfb-9383-4329-bea9-05987d81c9c1",
+              "name": "product",
+              "value": "={{ $('Edit Fields').item.json.product }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1568,
+        -1040
+      ],
+      "id": "01fbfe40-3a81-41e4-b72e-34af0be8a7d4",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Edit Fields').item.json.email }}",
+        "subject": "Detail Analysis of Your product Price",
+        "emailType": "text",
+        "message": "={\n  \"Predicated Price\":{{ $json.predicted_price }},\n  \"Current Price\":\"{{ $('Edit Fields1').item.json.PRICE }} \",\n  \"Recommendation\"{{ $json.recommendation }},\n  \"Message\":{{ $json.message }},\n  \"Market Insight{{ $json.market_insight }}s\",\n  \"Detail Report\":{{ $json.report }} ,\n  \n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -1152,
+        -1056
+      ],
+      "id": "1417c47b-6213-416f-9242-2f9cebf16691",
+      "name": "Send a message",
+      "webhookId": "e35d7513-bf8e-4ee8-b6f9-5ced8a87a85e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "tOEqly4BWXCRnLgn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/scrape",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"product\": \"{{$json.product}}\",\n  \"province\": \"{{$json.admname}}\",\n  \"city\": \"{{$json.mktname}}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1776,
+        -1072
+      ],
+      "id": "d0673675-b7e2-42ad-bb0f-c913c7f29b1b",
+      "name": "Scraping node"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:9000/predict",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"admname\":\"{{$json.admname}}\",\n  \"mktname\":\"{{$json.mktname}}\",\n  \"cmname\":\"{{ $json.product }}\",\n  \"prev_price\":\"{{$json.PRICE}}\",\n  \"day\": \"{{$json.day}}\",\n  \"month\": \"{{$json.month}}\",\n  \"year\": \"{{$json.year}}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1376,
+        -1152
+      ],
+      "id": "e561110a-a722-4f44-bc0b-52a13d096a13",
+      "name": "ML model"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Scraping node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "ML model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scraping node": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ML model": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "e6972819-3bf3-4b86-8721-769f088780f7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "24e9cc4dffcc674511a501f931b98204393b17b2a66e15a2bfc5f78df8731ca3"
+  },
+  "id": "rF2YUoCRhWSHG7My",
+  "tags": []
+}
